@@ -925,7 +925,12 @@ var StudioImage = (function () {
     if (appState.siSelectedAssetId && appState.siEditing) inner = renderEditor();
     else if (appState.siSelectedAssetId) inner = renderAssetDetail();
     else if (appState.studioImageWizardStep > 0) inner = renderWizard();
-    else inner = renderLibrary();
+    else {
+      var tab = appState.siTab || 'create';
+      inner = studioTabsBar('si', tab) + (tab === 'create'
+        ? studioLaunchpad({ prefix: 'si', accent: '#f59e0b', ink: '#0e1320', icon: '📷', title: 'Create image content', sub: 'On-brand visuals and social creative — generated, then refined on a layer canvas.', open: 'siStartWizard', cta: 'Start creating' })
+        : renderLibrary());
+    }
 
     if (appState.siEditing) {
       return '<div class="screen si-screen-editor">' + inner + toast + '</div>';

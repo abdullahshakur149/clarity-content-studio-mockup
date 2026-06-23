@@ -9,7 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="studio-text/studio-text.css?v=4">
 <link rel="stylesheet" href="studio-image/studio-image.css?v=4">
-<link rel="stylesheet" href="studio-video/studio-video.css?v=3">
+<link rel="stylesheet" href="studio-video/studio-video.css?v=4">
 <link rel="stylesheet" href="studio-audio/studio-audio.css?v=1">
 <style>
 /* Reset & tokens */
@@ -154,6 +154,76 @@ a { text-decoration: none; color: inherit; }
 .audio-ch-num.playing { background: #34d399; color: #fff; }
 .audio-ch-title { flex: 1; font-size: 12px; color: var(--text); }
 .audio-ch-dur { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--muted); }
+
+/* ===== Home hub (creation entry) ===== */
+.home-wrap { max-width: 980px; margin: 0 auto; padding: 56px 28px 48px; }
+.home-head { text-align: center; margin-bottom: 40px; }
+.home-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+.home-title { font-family: 'Cormorant Garamond', serif; font-size: 44px; font-weight: 700; line-height: 1.05; color: var(--text); }
+.home-sub { font-size: 15px; color: var(--muted); margin: 14px auto 0; max-width: 580px; line-height: 1.6; }
+.home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+.home-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 24px; position: relative; overflow: hidden; cursor: pointer; transition: border-color .15s, transform .15s; }
+.home-card:hover { border-color: var(--studio-accent); transform: translateY(-2px); }
+.home-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--studio-accent); }
+.home-card-icon { width: 46px; height: 46px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; background: color-mix(in srgb, var(--studio-accent) 16%, transparent); margin-bottom: 16px; }
+.home-card-name { font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 600; color: var(--text); }
+.home-card-tag { font-size: 13px; color: var(--muted); margin-top: 6px; line-height: 1.5; min-height: 38px; }
+.home-card-ex { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+.home-card-chip { font-size: 11px; color: var(--muted); background: var(--card2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 9px; }
+.home-card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+.home-card-cta { font-size: 13px; font-weight: 600; color: var(--studio-accent); }
+.home-card-browse { font-size: 12px; color: var(--muted); cursor: pointer; }
+.home-card-browse:hover { color: var(--text); }
+
+/* ===== Content Engine screen ===== */
+.eng-head { text-align: center; margin-bottom: 28px; }
+.eng-strategy { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 34px; }
+.eng-strat-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.eng-strat-barlabel { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.eng-strat-edit { font-size: 12px; color: var(--primary-hover); cursor: pointer; }
+.eng-strat-edit:hover { text-decoration: underline; }
+.eng-strat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.eng-strat-card { background: var(--card2); border: 1px solid var(--border); border-radius: 10px; padding: 14px; }
+.eng-strat-head { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; }
+.eng-strat-ic { font-size: 15px; }
+.eng-strat-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.eng-strat-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.eng-strat-body { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.eng-types-head { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 600; color: var(--text); text-align: center; margin-bottom: 16px; }
+.eng-types { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.eng-type-card { background: var(--card); border: 1px solid var(--border); border-radius: 13px; padding: 20px 18px; cursor: pointer; position: relative; overflow: hidden; transition: border-color .15s, transform .15s; }
+.eng-type-card:hover { border-color: var(--studio-accent); transform: translateY(-2px); }
+.eng-type-card::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 3px; background: var(--studio-accent); }
+.eng-type-icon { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 20px; background: color-mix(in srgb, var(--studio-accent) 16%, transparent); margin-bottom: 12px; }
+.eng-type-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--text); }
+.eng-type-tag { font-size: 12px; color: var(--muted); margin-top: 5px; line-height: 1.45; min-height: 52px; }
+.eng-type-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.eng-type-cta { font-size: 13px; font-weight: 600; color: var(--studio-accent); }
+@media (max-width: 860px) { .eng-types, .eng-strat-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ===== Studio Create / Library tabs ===== */
+.studio-tabbar { display: flex; align-items: center; gap: 16px; margin: 0 0 22px; }
+.studio-back { font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; }
+.studio-back:hover { color: var(--text); }
+.studio-tabs { display: inline-flex; gap: 4px; background: var(--card2); border: 1px solid var(--border); border-radius: 9px; padding: 4px; }
+.studio-tab { padding: 7px 18px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--muted); cursor: pointer; transition: all .15s; }
+.studio-tab:hover { color: var(--text); }
+.studio-tab.active { background: var(--card); color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+
+/* ===== Create launchpad (per studio) ===== */
+.create-hero { max-width: 540px; margin: 24px auto 40px; text-align: center; padding: 44px 38px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; position: relative; overflow: hidden; }
+.create-hero::before { content: ''; position: absolute; top: -40%; left: 50%; transform: translateX(-50%); width: 320px; height: 320px; background: radial-gradient(circle, var(--studio-accent), transparent 70%); opacity: .12; pointer-events: none; }
+.create-hero-icon { width: 60px; height: 60px; border-radius: 16px; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; background: color-mix(in srgb, var(--studio-accent) 18%, transparent); margin-bottom: 18px; position: relative; }
+.create-hero h2 { font-family: 'Cormorant Garamond', serif; font-size: 30px; font-weight: 700; color: var(--text); position: relative; }
+.create-hero-sub { font-size: 14px; color: var(--muted); margin-top: 8px; line-height: 1.55; position: relative; }
+.create-hero-strategy { margin-top: 22px; padding: 14px; border: 1px dashed var(--border); border-radius: 12px; background: var(--card2); position: relative; }
+.create-hero-strategy-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.create-hero-chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.inherit-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text); background: color-mix(in srgb, var(--studio-accent) 14%, var(--card)); border: 1px solid color-mix(in srgb, var(--studio-accent) 35%, transparent); border-radius: 20px; padding: 4px 11px; }
+.create-hero-cta { margin-top: 24px; padding: 11px 26px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; background: var(--studio-accent); color: var(--studio-ink, #fff); border: none; position: relative; cursor: pointer; }
+.create-hero-cta:hover { filter: brightness(1.08); }
+.create-hero-alt { margin-top: 14px; font-size: 12px; color: var(--muted); cursor: pointer; position: relative; }
+.create-hero-alt:hover { color: var(--text); text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -170,7 +240,7 @@ a { text-decoration: none; color: inherit; }
 <script>
 /* ===================== STATE (no browser storage) ===================== */
 var appState = {
-  screen: 'studio-text'
+  screen: 'engine'
 };
 
 /* ===================== NAVIGATION ===================== */
@@ -183,11 +253,8 @@ function nav(screen) {
 
 /* ===================== SIDEBAR ===================== */
 var STUDIO_NAV = [
-  { group: 'Content' },
-  { id: 'studio-text',           icon: '&#9997;', label: 'Studio: Text' },
-  { id: 'studio-image',          icon: '&#128247;', label: 'Studio: Image' },
-  { id: 'studio-video',          icon: '&#127909;', label: 'Studio: Video' },
-  { id: 'studio-audio',          icon: '&#127908;', label: 'Studio: Audio' },
+  { group: 'Workspace' },
+  { id: 'engine',                icon: '&#9889;', label: 'Content Engine' },
 ];
 
 function renderSidebar() {
@@ -200,7 +267,8 @@ function renderSidebar() {
     if (item.group) {
       html += '<div class="sidebar-group-label">' + item.group + '</div>';
     } else {
-      var active = appState.screen === item.id ? ' active' : '';
+      var onStudio = appState.screen.indexOf('studio-') === 0;
+      var active = (appState.screen === item.id || (item.id === 'engine' && onStudio)) ? ' active' : '';
       var badge = item.badge ? '<span class="sidebar-badge">' + item.badge + '</span>' : '';
       html += '<div class="sidebar-item' + active + '" onclick="nav(\'' + item.id + '\')">'
             + '<span class="icon">' + item.icon + '</span>'
@@ -212,13 +280,14 @@ function renderSidebar() {
 }
 
 /* ===================== CONTENT ROUTER ===================== */
-var STUDIO_SCREEN_IDS = ['studio-text', 'studio-image', 'studio-video', 'studio-audio'];
+var STUDIO_SCREEN_IDS = ['engine', 'studio-text', 'studio-image', 'studio-video', 'studio-audio'];
 
 function renderContent() {
   var el = document.getElementById('content');
   var s = appState.screen;
   var html;
   switch (s) {
+    case 'engine': html = screenEngine(); break;
     case 'studio-image': html = screenStudioImage(); break;
     case 'studio-video': html = screenStudioVideo(); break;
     case 'studio-audio': html = screenStudioAudio(); break;
@@ -227,68 +296,107 @@ function renderContent() {
   el.innerHTML = html;
 }
 
-/* ===================== STUDIO — AUDIO ===================== */
-function screenStudioAudio() {
-  var chapters = [
-    {n:1,title:'The craft paradox',dur:'4:12',playing:true},
-    {n:2,title:'72-hour ferment — why it matters',dur:'6:08',playing:false},
-    {n:3,title:'Interview: Millie, loyal customer',dur:'8:44',playing:false},
-    {n:4,title:'Data segment: artisan retention',dur:'5:22',playing:false},
-    {n:5,title:'Closing: community over volume',dur:'3:15',playing:false},
-  ];
+/* ===================== HOME HUB + SHARED CREATION HELPERS ===================== */
+var HOME_STUDIOS = [
+  { key: 'text',  name: 'Studio Text',  icon: '&#9997;&#65039;', accent: '#6366f1', ink: '#ffffff', tag: 'Emails, newsletters, blogs and social posts — written in your brand voice.', ex: ['Email', 'Newsletter', 'Blog', 'Caption'] },
+  { key: 'image', name: 'Studio Image', icon: '&#128247;',       accent: '#f59e0b', ink: '#0e1320', tag: 'On-brand visuals and social creative, generated and refined on a layer canvas.', ex: ['Feed', 'Story', 'Poster', 'Ad'] },
+  { key: 'video', name: 'Studio Video', icon: '&#127909;',       accent: '#f87171', ink: '#0e1320', tag: 'Short-form reels and long-form video with an AI go-to-market strategy.', ex: ['Reel', 'Short', 'YouTube', 'Ad'] },
+  { key: 'audio', name: 'Studio Audio', icon: '&#127908;',       accent: '#34d399', ink: '#0e1320', tag: 'Podcasts, voiceovers and audio ads — start from a goal, not a blank track.', ex: ['Podcast', 'Voiceover', 'Ad', 'Narration'] }
+];
+var STUDIO_PREFIX = { text: 'st', image: 'si', video: 'sv', audio: 'sa' };
+var STUDIO_OPENER = { text: 'stStartWizard', image: 'siStartWizard', video: 'svNewVideo', audio: 'saNewAudio' };
 
-  var deterministicHeights = [30,45,60,38,72,55,80,42,65,50,78,35,60,48,70,38,55,68,42,75,52,88,40,65,48,73,35,60,50,80,38,68,45,72,55,82,40,65,48,78,35,60,50,75,42,68,38,70,55,85,40,62,48,73,35,65,50,80,38,68,45,72,55,82,40,60,48,75,35,65,50,80,38,68,45,72,55,82,40,62];
+/* Inherited strategy — the "previous 4-step" pillars, shown as dummy data so they
+   are never re-entered inside a creation flow. */
+var ENGINE_STRATEGY = {
+  brand: 'Hearth Bakery',
+  cards: [
+    { label: 'Persona', icon: '🎯', title: 'The Artisan Loyalist', body: '28–45, values craft &amp; provenance. Shops local weekly, follows makers, pays a premium for transparency.' },
+    { label: 'Market Intelligence', icon: '📈', title: 'Craft demand is rising', body: 'Premium local-bakery demand +18% YoY. Mass-produced fatigue is high; the open gap is honest behind-the-craft storytelling.' },
+    { label: 'Positioning', icon: '✨', title: 'Quality over volume', body: 'Slow-fermented, community-first. We win on trust and story — not on price or scale.' }
+  ]
+};
 
-  return '<div class="screen">'
-    + '<div class="screen-header flex-between"><div><h1 class="screen-title">Studio — Audio</h1><p class="screen-sub">Ep 13: Community-first growth · Podcast · 27:41 · Maker draft v1</p></div>'
-    + '<div style="display:flex;gap:8px;"><button class="btn btn-outline btn-sm">Export MP3</button><button class="btn btn-outline btn-sm">Distribute</button><button class="btn btn-primary btn-sm">Submit for review</button></div></div>'
-    + '<div style="display:grid;grid-template-columns:1fr 280px;gap:16px;">'
-    + '<div>'
-    + '<div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;">'
-    + '<div style="font-size:14px;font-weight:600;margin-bottom:2px;">Ep 13: Community-first growth</div>'
-    + '<div style="font-size:11px;color:var(--muted);margin-bottom:14px;">Hearth Bakery Podcast · 27:41</div>'
-    + '<div style="height:70px;display:flex;align-items:center;gap:1px;background:var(--card2);border-radius:6px;padding:8px;margin-bottom:10px;overflow:hidden;">'
-    + deterministicHeights.map(function(h,i){ return '<div style="flex:1;border-radius:1px;background:'+(i<30?'var(--primary)':'rgba(154,160,180,0.3)')+';height:'+h+'%;transition:height 0.1s;"></div>'; }).join('')
+function screenEngine() {
+  var strat = ENGINE_STRATEGY.cards.map(function (c) {
+    return '<div class="eng-strat-card">'
+      + '<div class="eng-strat-head"><span class="eng-strat-ic">' + c.icon + '</span><span class="eng-strat-label">' + c.label + '</span></div>'
+      + '<div class="eng-strat-title">' + c.title + '</div>'
+      + '<div class="eng-strat-body">' + c.body + '</div>'
+      + '</div>';
+  }).join('');
+  var types = HOME_STUDIOS.map(function (s) {
+    return '<div class="eng-type-card" style="--studio-accent:' + s.accent + '" onclick="homeCreate(\'' + s.key + '\')">'
+      + '<div class="eng-type-icon">' + s.icon + '</div>'
+      + '<div class="eng-type-name">' + s.name.replace('Studio ', '') + '</div>'
+      + '<div class="eng-type-tag">' + s.tag + '</div>'
+      + '<div class="eng-type-foot"><span class="eng-type-cta">Start →</span>'
+      + '<span class="home-card-browse" onclick="event.stopPropagation();homeBrowse(\'' + s.key + '\')">Library</span></div>'
+      + '</div>';
+  }).join('');
+  return '<div class="screen"><div class="home-wrap">'
+    + '<div class="eng-head">'
+    + '<div class="home-eyebrow">Content Engine</div>'
+    + '<h1 class="home-title">Let\'s make something that lands.</h1>'
+    + '<p class="home-sub">Your strategy is already loaded. Pick a format and Clarity takes you straight to go-to-market — no re-entering personas or research.</p>'
     + '</div>'
-    + '<div style="display:flex;align-items:center;gap:8px;">'
-    + ['⏮','⏪','⏸','⏩','⏭'].map(function(b){ return '<div style="width:30px;height:30px;border-radius:6px;background:var(--card2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;color:var(--muted);">'+b+'</div>'; }).join('')
-    + '<div style="flex:1;height:4px;background:var(--border);border-radius:2px;"><div style="width:38%;height:100%;background:var(--primary);border-radius:2px;"></div></div>'
-    + '<div style="font-family:\'DM Mono\',monospace;font-size:11px;color:var(--muted);">10:33 / 27:41</div>'
+    + '<div class="eng-strategy">'
+    + '<div class="eng-strat-bar"><span class="eng-strat-barlabel">◷ Your strategy · ' + ENGINE_STRATEGY.brand + '</span>'
+    + '<span class="eng-strat-edit" title="Inherited from your Strategy module">Edit strategy</span></div>'
+    + '<div class="eng-strat-grid">' + strat + '</div>'
+    + '</div>'
+    + '<div class="eng-types-head">What do you want to create?</div>'
+    + '<div class="eng-types">' + types + '</div>'
+    + '</div></div>';
+}
+
+function homeCreate(key) {
+  appState[STUDIO_PREFIX[key] + 'Tab'] = 'create';
+  appState.screen = 'studio-' + key;
+  renderSidebar();
+  var fn = window[STUDIO_OPENER[key]];
+  if (typeof fn === 'function') { fn(); } else { renderContent(); }
+  try { history.replaceState(null, '', '#/enterprise/studio-' + key); } catch (e) {}
+}
+
+function homeBrowse(key) {
+  appState[STUDIO_PREFIX[key] + 'Tab'] = 'library';
+  nav('studio-' + key);
+}
+
+/* Segmented Create | My Library control rendered at the top of each studio */
+function studioTabsBar(prefix, active) {
+  active = active || 'create';
+  function tab(id, label) {
+    return '<div class="studio-tab' + (active === id ? ' active' : '') + '" onclick="setStudioTab(\'' + prefix + '\',\'' + id + '\')">' + label + '</div>';
+  }
+  return '<div class="studio-tabbar">'
+    + '<span class="studio-back" onclick="nav(\'engine\')">‹ Content Engine</span>'
+    + '<div class="studio-tabs">' + tab('create', '✦ Create') + tab('library', '▦ My Library') + '</div>'
+    + '</div>';
+}
+
+function setStudioTab(prefix, tab) {
+  appState[prefix + 'Tab'] = tab;
+  renderContent();
+}
+
+/* Create-tab launchpad hero shared by all four studios */
+function studioLaunchpad(o) {
+  return '<div class="create-hero" style="--studio-accent:' + o.accent + ';--studio-ink:' + (o.ink || '#fff') + '">'
+    + '<div class="create-hero-icon">' + o.icon + '</div>'
+    + '<h2>' + o.title + '</h2>'
+    + '<p class="create-hero-sub">' + o.sub + '</p>'
+    + '<div class="create-hero-strategy">'
+    + '<div class="create-hero-strategy-label">Auto-applied from your strategy</div>'
+    + '<div class="create-hero-chips">'
+    + '<span class="inherit-chip">◷ Persona</span>'
+    + '<span class="inherit-chip">◷ Market intel</span>'
+    + '<span class="inherit-chip">◷ GTM strategy</span>'
     + '</div>'
     + '</div>'
-    + '<div class="label" style="margin-bottom:8px;">Chapters</div>'
-    + '<div class="audio-chapter-list">'
-    + chapters.map(function(c){
-        return '<div class="audio-chapter'+(c.playing?' playing':'')+'">'
-          + '<div class="audio-ch-num'+(c.playing?' playing':'')+'">'+c.n+'</div>'
-          + '<div class="audio-ch-title">'+c.title+'</div>'
-          + '<div class="audio-ch-dur">'+c.dur+'</div>'
-          + '</div>';
-      }).join('')
-    + '</div>'
-    + '</div>'
-    + '<div style="display:flex;flex-direction:column;gap:10px;">'
-    + '<div class="card" style="padding:14px;"><div class="label" style="margin-bottom:10px;">Generate</div>'
-    + '<button class="btn btn-primary" style="width:100%;margin-bottom:6px;">✦ AI voiceover</button>'
-    + '<button class="btn btn-outline" style="width:100%;margin-bottom:6px;">✦ Background music</button>'
-    + '<button class="btn btn-outline" style="width:100%;margin-bottom:6px;">✦ Auto-transcribe</button>'
-    + '<button class="btn btn-outline" style="width:100%;">✦ Audiogram clips</button>'
-    + '</div>'
-    + '<div class="card" style="padding:14px;"><div class="label" style="margin-bottom:8px;">Distribution</div>'
-    + [['Spotify','Connected','#1DB954'],['Apple Podcasts','Connected','#872EC4'],['YouTube Podcasts','Pending','#f59e0b'],['RSS Feed','Active','#f87171']].map(function(d){ return '<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border);"><div style="font-size:12px;font-weight:500;">'+d[0]+'</div><div style="font-size:10px;font-weight:700;color:'+d[2]+';">'+d[1]+'</div></div>'; }).join('')
-    + '</div>'
-    + '<div class="card" style="padding:14px;"><div class="label" style="margin-bottom:8px;">Persona Fit</div>'
-    + '<div class="pf-breakdown">'
-    + [['Resonance','88'],['Voice Fit','85'],['Format Fit','82'],['Timing Fit','80']].map(function(d){ return '<div class="pf-dim"><div class="pf-dim-name">'+d[0]+'</div><div class="pf-dim-bar"><div class="pf-dim-fill" style="width:'+d[1]+'%;"></div></div><div class="pf-dim-val">'+d[1]+'</div></div>'; }).join('')
-    + '</div><div style="margin-top:8px;text-align:center;"><span class="pf-chip green"><span class="pf-chip-dot"></span>84 / 100</span></div>'
-    + '</div>'
-    + '<div class="card" style="padding:14px;"><div class="label" style="margin-bottom:10px;">Approvals</div>'
-    + '<div class="approval-rail">'
-    + [['Brand Review','Auto-cleared','done'],['Audio QA','Kira M.','done'],['Publish','Scheduled Fri','active']].map(function(a){ return '<div class="approval-step '+a[2]+'"><div class="approval-icon '+a[2]+'">'+(a[2]==='done'?'✓':a[2]==='active'?'→':'○')+'</div><div class="approval-meta"><div class="approval-name">'+a[0]+'</div><div class="approval-who">'+a[1]+'</div></div></div>'; }).join('')
-    + '</div>'
-    + '</div>'
-    + '</div>'
-    + '</div>'
+    + '<button class="create-hero-cta" onclick="' + o.open + '()">' + o.cta + ' →</button>'
+    + '<div class="create-hero-alt" onclick="setStudioTab(\'' + o.prefix + '\',\'library\')">or browse your library</div>'
     + '</div>';
 }
 
@@ -299,7 +407,7 @@ function init() {
     var parts = h.slice(2).split('/');
     if (parts.length >= 2) {
       var screen = parts[1];
-      if (parts[0] === 'smb' || STUDIO_SCREEN_IDS.indexOf(screen) === -1) screen = 'studio-text';
+      if (parts[0] === 'smb' || STUDIO_SCREEN_IDS.indexOf(screen) === -1) screen = 'engine';
       nav(screen);
       return;
     }
@@ -310,10 +418,10 @@ function init() {
 window.addEventListener('load', init);
 
 </script>
-<script src="studio-text/studio-text.js?v=6"></script>
-<script src="studio-image/studio-image.js?v=5"></script>
-<script src="studio-video/studio-video.js?v=3"></script>
-<script src="studio-audio/studio-audio.js?v=1"></script>
+<script src="studio-text/studio-text.js?v=7"></script>
+<script src="studio-image/studio-image.js?v=6"></script>
+<script src="studio-video/studio-video.js?v=5"></script>
+<script src="studio-audio/studio-audio.js?v=2"></script>
 <script>StudioText.init(appState); StudioImage.init(appState); StudioVideo.init(appState); StudioAudio.init(appState);</script>
 
 <!-- Clarity Content Studio — Text, Image, Video, Audio -->

@@ -255,6 +255,7 @@ var StudioAudio = (function () {
     });
     appState.saFilters = { search: '', goal: 'All', status: 'All', date: 'All' };
     appState.saFlow.open = false;
+    appState.saTab = 'library';
     var msg = mode === 'publish' ? 'Published — added to My Library'
       : mode === 'schedule' ? 'Scheduled — added to My Library'
       : 'Added to campaign — sent for review';
@@ -544,7 +545,11 @@ var StudioAudio = (function () {
   function screenStudioAudio() {
     var toast = appState.saToast ? '<div class="sa-toast">' + appState.saToast + '</div>' : '';
     var overlay = (appState.saFlow && appState.saFlow.open) ? saFlowOverlay() : '';
-    return '<div class="screen">' + renderStudioAudioLibrary() + overlay + toast + '</div>';
+    var tab = appState.saTab || 'create';
+    var body = studioTabsBar('sa', tab) + (tab === 'create'
+      ? studioLaunchpad({ prefix: 'sa', accent: '#34d399', ink: '#0e1320', icon: '🎙️', title: 'Create audio', sub: 'Podcasts, voiceovers and audio ads — start from a goal and let AI pre-tune the voice and production.', open: 'saNewAudio', cta: 'Start creating' })
+      : renderStudioAudioLibrary());
+    return '<div class="screen">' + body + overlay + toast + '</div>';
   }
 
   return { init: init, screenStudioAudio: screenStudioAudio };

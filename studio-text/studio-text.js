@@ -754,7 +754,12 @@ var StudioText = (function () {
     if (appState.stSelectedPostId && appState.stEditing) inner = renderStudioTextEditor();
     else if (appState.stSelectedPostId) inner = renderStudioTextPostDetail();
     else if (appState.studioTextWizardStep > 0) inner = renderStudioTextWizard();
-    else inner = renderStudioTextLibrary();
+    else {
+      var tab = appState.stTab || 'create';
+      inner = studioTabsBar('st', tab) + (tab === 'create'
+        ? studioLaunchpad({ prefix: 'st', accent: '#6366f1', ink: '#ffffff', icon: '✍️', title: 'Create text content', sub: 'Emails, newsletters, blogs and social posts — drafted in your brand voice and ready to refine.', open: 'stStartWizard', cta: 'Start creating' })
+        : renderStudioTextLibrary());
+    }
 
     if (appState.stEditing) {
       return '<div class="screen st-screen-editor">' + inner + toast + '</div>';

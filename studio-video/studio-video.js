@@ -135,31 +135,38 @@ var StudioVideo = (function () {
     var v = appState.svVideos.filter(function (x) { return x.id === id; })[0];
     svShowToast((v ? '“' + v.title + '”' : 'Video') + ' — editor opens in the next step');
   };
+  // Progress across the 5 live stages: GTM(3) → Engine(4) → Generate(5) → Preview(6) → Publish(7).
+  function svFlowPct(step) { return Math.round((Math.min(5, Math.max(1, step - 2)) / 5) * 100); }
+  // Title now comes from the chosen variation's angle (no manual idea text any more).
+  function svFlowTitle() {
+    var fl = appState.svFlow;
+    var v = fl.variations && fl.selectedVar != null ? fl.variations[fl.selectedVar] : null;
+    if (v && v.angle) return v.angle;
+    if (fl.seed && fl.seed.trim()) return fl.seed.trim();
+    return 'Untitled video';
+  }
   window.svNewVideo = function () {
     appState.svFlow = svFreshFlow();
-    appState.svFlow.open = true;
+    var fl = appState.svFlow;
+    fl.open = true;
+    // Idea/brief, Market Intelligence and Persona are all inherited from the campaign
+    // strategy — no manual entry. Pre-fill the pillars and let AI pre-pick GTM defaults,
+    // then open directly on Go-to-Market.
+    var data = SV_FLOW_DATA.fallback;
+    fl.q1 = data.q1; fl.q2 = data.q2; fl.q3 = data.q3; fl.q4 = data.q4;
+    var rec = svFlowRecommend(fl.seed);
+    var p = svFlowPlatform(rec.type);
+    fl.recommend = rec; fl.platform = rec.type; fl.ratio = p.ratio; fl.res = p.res;
+    fl.contentType = 'Live-action film';
+    fl.step = 3;
+    fl.sync = svFlowPct(3);
     renderContent();
   };
   window.svFlowExit = function () { appState.svFlow.open = false; renderContent(); };
   window.svFlowGoTo = function (p) {
     appState.svFlow.step = p;
-    appState.svFlow.sync = p === 0 ? 5 : Math.round((p / 7) * 100);
+    appState.svFlow.sync = svFlowPct(p);
     renderContent();
-  };
-  window.svFlowStart = function () {
-    var fl = appState.svFlow;
-    if (!fl.seed || !fl.seed.trim()) { svShowToast('Share your idea first to begin'); return; }
-    var data = fl.seed.toLowerCase().indexOf('filter') >= 0 ? SV_FLOW_DATA.filter : SV_FLOW_DATA.fallback;
-    fl.q1 = data.q1; fl.q2 = data.q2; fl.q3 = data.q3; fl.q4 = data.q4;
-    // AI pre-selects the best-fit platform + default specs; the user can override in Pillar 3.
-    var rec = svFlowRecommend(fl.seed);
-    var p = svFlowPlatform(rec.type);
-    fl.recommend = rec;
-    fl.platform = rec.type;
-    fl.ratio = p.ratio;
-    fl.res = p.res;
-    if (!fl.contentType) fl.contentType = 'Live-action film';
-    svFlowGoTo(1);
   };
   window.svFlowSetGTM = function (type) {
     var p = svFlowPlatform(type);
@@ -202,7 +209,7 @@ var StudioVideo = (function () {
   window.svFlowGenerate = function () {
     var fl = appState.svFlow;
     fl.step = 5; fl.generating = true; fl.variations = null; fl.selectedVar = null;
-    fl.sync = Math.round((5 / 7) * 100);
+    fl.sync = svFlowPct(5);
     renderContent();
     setTimeout(function () {
       appState.svFlow.variations = svBuildVariations();
@@ -216,7 +223,7 @@ var StudioVideo = (function () {
     var fl = appState.svFlow;
     var p = svFlowPlatform(fl.platform) || svFlowPlatform('ig-reel');
     var v = fl.variations && fl.selectedVar != null ? fl.variations[fl.selectedVar] : null;
-    var title = fl.seed && fl.seed.trim() ? fl.seed.trim() : 'Untitled video';
+    var title = svFlowTitle();
     if (title.length > 56) title = title.slice(0, 56).replace(/\s+\S*$/, '') + '…';
     var status = mode === 'publish' ? 'Published' : mode === 'schedule' ? 'Scheduled' : 'In Review';
     var aspect = (fl.ratio || p.ratio).split(' ')[0];
@@ -234,6 +241,7 @@ var StudioVideo = (function () {
     });
     appState.svFilters = { search: '', platform: 'All', status: 'All', date: 'All' };
     appState.svFlow.open = false;
+    appState.svTab = 'library';
     var msg = mode === 'publish' ? 'Published to ' + p.lib + ' — added to My Library'
       : mode === 'schedule' ? 'Scheduled — added to My Library'
       : 'Added to campaign — sent for review';
@@ -242,54 +250,12 @@ var StudioVideo = (function () {
 
   function svFlowSyncBar() {
     var fl = appState.svFlow;
-    var width = fl.step === 0 ? 5 : Math.round((fl.step / 7) * 100);
+    var width = svFlowPct(fl.step);
     var status = SV_FLOW_LABELS[fl.step] || 'SYSTEM IDLE';
     return '<div class="svf-sync">'
       + '<div class="svf-sync-mono">Production Sync</div>'
       + '<div class="svf-sync-track"><div id="svf-sync-fill" class="svf-sync-fill" style="width:' + width + '%;"></div></div>'
       + '<div id="svf-sync-status" class="svf-sync-status">' + status + '</div>'
-      + '</div>';
-  }
-
-  function svFlowQCard(tag, label, tip, field) {
-    return '<div class="svf-card">'
-      + '<div class="svf-tag">' + tag + '</div>'
-      + '<label class="svf-qlabel">' + label + '<span class="svf-tt" data-tip="' + tip + '">?</span></label>'
-      + '<textarea rows="3" oninput="appState.svFlow.' + field + '=this.value;svFlowPulse()">' + svfEsc(appState.svFlow[field]) + '</textarea>'
-      + '</div>';
-  }
-
-  function svFlowFooter(backStep, nextStep, nextLabel) {
-    return '<div class="svf-foot">'
-      + '<button class="btn btn-outline" onclick="svFlowGoTo(' + backStep + ')">Back</button>'
-      + '<button class="btn btn-primary" onclick="svFlowGoTo(' + nextStep + ')">' + nextLabel + ' →</button>'
-      + '</div>';
-  }
-
-  function svFlowStep0() {
-    return '<div class="svf-step">'
-      + '<h1 class="svf-h1" style="font-size:46px;text-align:center;margin-bottom:10px;">What are we building?</h1>'
-      + '<p class="svf-sub" style="text-align:center;font-size:18px;margin-bottom:36px;">Enter your product idea or link to begin the 4-Pillar Consultation.</p>'
-      + '<textarea class="svf-seed" rows="6" placeholder="e.g. A portable water filter that fits in a wallet for world travelers…" oninput="appState.svFlow.seed=this.value">' + svfEsc(appState.svFlow.seed) + '</textarea>'
-      + '<div style="text-align:center;margin-top:36px;"><button class="btn btn-primary" onclick="svFlowStart()">Initialize Strategy Engine →</button></div>'
-      + '</div>';
-  }
-
-  function svFlowStep1() {
-    return '<div class="svf-step">'
-      + '<h1 class="svf-h1" style="font-size:34px;margin-bottom:32px;">Pillar 1: Market Intelligence</h1>'
-      + svFlowQCard('AI STRATEGY ASSISTANT', 'What is the "White Space" for this product?', "The specific 'angle' where your competitors are silent. This is how we make you stand out.", 'q1')
-      + svFlowQCard('AI STRATEGY ASSISTANT', 'Which Market "Gap" are we exploiting?', "The #1 frustration customers have with existing products that you solve.", 'q2')
-      + svFlowFooter(0, 2, 'Confirm Intelligence')
-      + '</div>';
-  }
-
-  function svFlowStep2() {
-    return '<div class="svf-step">'
-      + '<h1 class="svf-h1" style="font-size:34px;margin-bottom:32px;">Pillar 2: Persona Studio</h1>'
-      + svFlowQCard('AI PERSONA ARCHITECT', 'Who is the "Hero" of your video story?', "The specific character whose life is changed by this. This dictates our visual and vocal style.", 'q3')
-      + svFlowQCard('AI PERSONA ARCHITECT', 'What is their core Motivator or Fear?', "The psychological 'trigger' that will make them stop scrolling.", 'q4')
-      + svFlowFooter(1, 3, 'Confirm Persona')
       + '</div>';
   }
 
@@ -320,24 +286,27 @@ var StudioVideo = (function () {
       + '<div class="svf-specs-hint">✦ AI-suggested defaults — override any field</div>'
       + '</div>';
 
+    var inheritStrip = '<div class="svf-inherit-strip">◷ <b>Carrying your strategy</b> — Persona: ' + svfEsc(svFlowHeroLabel()) + ' · market intelligence applied</div>';
+
     return '<div class="svf-step">'
-      + '<h1 class="svf-h1" style="font-size:34px;text-align:center;margin-bottom:10px;">Pillar 3: GTM Strategy</h1>'
-      + '<p class="svf-sub" style="text-align:center;margin-bottom:24px;">Where will your Hero find this? The pick sets the video size and technical specs.</p>'
+      + '<h1 class="svf-h1" style="font-size:34px;text-align:center;margin-bottom:10px;">Go-to-Market Strategy</h1>'
+      + '<p class="svf-sub" style="text-align:center;margin-bottom:18px;">Where will your audience find this? The pick sets the video size and technical specs.</p>'
+      + inheritStrip
       + recBanner
       + '<div class="svf-platform-grid">' + grid + '</div>'
       + specs
-      + '<div class="svf-foot"><button class="btn btn-outline" onclick="svFlowGoTo(2)">Back</button>'
+      + '<div class="svf-foot"><button class="btn btn-outline" onclick="svFlowExit()">Cancel</button>'
       + '<button class="btn btn-primary" onclick="svFlowGoTo(4)">Lock Strategy →</button></div>'
       + '</div>';
   }
 
   function svFlowStep4() {
     return '<div class="svf-step">'
-      + '<h1 class="svf-h1" style="font-size:34px;text-align:center;margin-bottom:10px;">Pillar 4: Content Engine</h1>'
+      + '<h1 class="svf-h1" style="font-size:34px;text-align:center;margin-bottom:10px;">Content Engine</h1>'
       + '<p class="svf-sub" style="text-align:center;margin-bottom:32px;">Finalize the production vibe to fuel the asset generation model.</p>'
       + '<div class="svf-card svf-finish-card">'
-      + '<h3 style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:24px;margin-bottom:10px;color:var(--accent);">All Pillars Synchronized</h3>'
-      + '<p class="svf-sub" style="margin-bottom:28px;">Intelligence, Persona, GTM, and Format are locked. Your Campaign Vitality is 100%.</p>'
+      + '<h3 style="font-family:\'Cormorant Garamond\',serif;font-weight:500;font-size:24px;margin-bottom:10px;color:var(--accent);">Strategy Synchronized</h3>'
+      + '<p class="svf-sub" style="margin-bottom:28px;">Persona, market intelligence, GTM and format are locked. Your Campaign Vitality is 100%.</p>'
       + '<button class="btn btn-primary" style="background:var(--accent);color:var(--bg);width:100%;justify-content:center;font-size:16px;" onclick="svFlowGenerate()">✨ Generate Variations</button>'
       + '</div>'
       + '<div class="svf-foot"><button class="btn btn-outline" onclick="svFlowGoTo(3)">Back</button><span></span></div>'
@@ -427,7 +396,7 @@ var StudioVideo = (function () {
     var fl = appState.svFlow;
     var v = fl.variations && fl.selectedVar != null ? fl.variations[fl.selectedVar] : null;
     var p = svFlowPlatform(fl.platform);
-    var title = fl.seed && fl.seed.trim() ? fl.seed.trim() : 'Untitled video';
+    var title = svFlowTitle();
     return '<div class="svf-step">'
       + '<h1 class="svf-h1" style="font-size:34px;text-align:center;margin-bottom:10px;">Publish</h1>'
       + '<p class="svf-sub" style="text-align:center;margin-bottom:24px;">Your cut is ready. Ship it now, schedule it, or drop it into a campaign.</p>'
@@ -447,14 +416,12 @@ var StudioVideo = (function () {
 
   function svFlowOverlay() {
     var step = appState.svFlow.step;
-    var body = step === 0 ? svFlowStep0()
-      : step === 1 ? svFlowStep1()
-      : step === 2 ? svFlowStep2()
-      : step === 3 ? svFlowStep3()
-      : step === 4 ? svFlowStep4()
+    // Flow now opens on GTM (step 3); idea / Market / Persona are inherited upstream.
+    var body = step === 4 ? svFlowStep4()
       : step === 5 ? svFlowStep5()
       : step === 6 ? svFlowStep6()
-      : svFlowStep7();
+      : step === 7 ? svFlowStep7()
+      : svFlowStep3();
     return '<div class="svf-overlay">'
       + '<div class="svf-topbar">'
       + '<div class="svf-brand">Studio — Video<em>New Video</em></div>'
@@ -556,8 +523,12 @@ var StudioVideo = (function () {
   function screenStudioVideo() {
     var toast = appState.svToast ? '<div class="sv-toast">' + appState.svToast + '</div>' : '';
     var overlay = (appState.svFlow && appState.svFlow.open) ? svFlowOverlay() : '';
+    var tab = appState.svTab || 'create';
+    var body = studioTabsBar('sv', tab) + (tab === 'create'
+      ? studioLaunchpad({ prefix: 'sv', accent: '#f87171', ink: '#0e1320', icon: '🎬', title: 'Create a video', sub: 'Short-form reels and long-form video — with an AI go-to-market strategy that picks the platform for you.', open: 'svNewVideo', cta: 'Start creating' })
+      : renderStudioVideoLibrary());
     return '<div class="screen">'
-      + renderStudioVideoLibrary()
+      + body
       + overlay
       + toast
       + '</div>';
